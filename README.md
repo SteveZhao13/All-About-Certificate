@@ -9,6 +9,16 @@ Including all the information and explanation when learning certificates related
 
 ---
 
+How to add openssl library into CMake files so that the C/C++ programs can include \<openssl\>
+
+```makefile
+project(project_name)
+find_package(OpenSSL REQUIRED)
+target_link_libraries(project_name OpenSSL::SSL)
+```
+
+---
+
 EVP_Digest related functions are used to encrypt data (usually a char[]) using a certain cryptographic function
 
 * Definition/Syntax of common used functions
@@ -41,12 +51,19 @@ unsigned int encrypted_value_len;
 mdctx = EVP_MD_CTX_new();
 EVP_DigestInit(mdctx, EVP_sha1());
 EVP_DigestUpdate(mdctx, message, strlen(message));
-EVP_DigestFinal_(mdctx, encrypted_value, &encrypted_value_len);
+EVP_DigestFinal(mdctx, encrypted_value, &encrypted_value_len);
 /* print out results */
 printf("Encrypted data value is: ");
 for (int i = 0; i < encrypted_value_len; i++) {
     printf("%02x", encrypted_value[i]);
 }
 ```
+---
+What are the properties of EVP_Digest function:
 
+* For any random message, generating a hash value is easy to implement
+* For any hash value, in theory, it's not possible to retrieve the according message (the EVP_Digest functions are single direction)
+* It's not possible to only change the message without changing its hash value
+* It's not possible to find two messages with the same hash value
 
+**Ref:** [The GmSSL Project](http://gmssl.org/docs/evp-api.html)
